@@ -103,10 +103,6 @@ button:focus-visible, select:focus-visible, textarea:focus-visible, input:focus-
 .clear-button, .reader-stop { color: #f2fbf2; background: transparent; border-radius: 8px; padding: 8px 10px; font-size: .875rem; font-weight: 650; }
 .clear-button:enabled:hover { background: #f7fff025; }
 .reader-stop { display: inline-flex; align-items: center; gap: 4px; border: 1px solid #ddfce145; }
-.pair-button { display: inline-flex; align-items: center; justify-content: center; gap: 5px; min-height: 34px; padding: 4px 8px; border: 1px solid #ddfce15c; border-radius: 8px; background: #f7fff00d; color: #f2fbf2; font-size: .875rem; font-weight: 680; }
-.pair-button:hover { background: #f7fff025; }
-.pair-button[data-active="true"] { color: var(--leaf); }
-.reader.expanded .pair-button { display: none; }
 
 .speaker { display: flex; flex-direction: column; border: 1px solid var(--line); border-radius: 26px; padding: 24px; background: #fff; }
 .speaker-heading { display: flex; align-items: center; gap: 11px; }
@@ -149,9 +145,7 @@ dialog summary { cursor: pointer; font-weight: 700; }
 dialog a { color: #23583b; }
 textarea { width: 100%; padding: 10px; resize: vertical; border: 1px solid #a9bfae; border-radius: 9px; background: #f8fbf7; }
 #type-status { margin: 7px 0 13px; font-size: .875rem; color: var(--quiet); }
-#share-dialog, #pair-dialog { width: min(430px, calc(100% - 28px)); }
-#pair-dialog .share-status:empty { display: none; }
-#pair-end { margin-top: 6px; }
+#share-dialog { width: min(430px, calc(100% - 28px)); }
 .share-qr { margin: 0 0 18px; text-align: center; }
 .share-qr img { display: block; width: min(100%, 238px); height: auto; margin: 0 auto 9px; border: 1px solid var(--line); border-radius: 12px; }
 .share-qr figcaption { font-size: .94rem; line-height: 1.45; }
@@ -212,8 +206,3 @@ body.expanded { overflow: hidden; }
   .header-actions .help-button { width: 42px; min-height: 42px; }
   .header-actions .help-button span { display: none; }
 }
-.watch-page { background: #10382a; }
-.watch-page .reader { min-height: 100vh; min-height: 100dvh; border: 0; border-radius: 0; padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left); }
-.watch-page .caption-scroll { --caption-size: clamp(2rem, 5.9vw, 5.4rem); padding-inline: clamp(22px, 6vw, 92px); }
-.watch-page .reader-footer { min-height: 54px; }
-.watch-home { color: #d7f7d3; font-size: .875rem; font-weight: 650; text-underline-offset: 3px; }

@@ -8,7 +8,6 @@
   <title>말빛 · Live Korean Captions</title>
   <link rel="icon" href="icon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="style.css">
-  <script defer src="pair.js"></script>
   <script defer src="app.js"></script>
 </head>
 <body>
@@ -72,7 +71,6 @@
 
         <footer class="reader-footer">
           <span id="reader-status" class="reader-status" lang="ko" role="status"><i></i><span>대기 중</span></span>
-          <button id="pair" class="pair-button" type="button"><svg class="icon" aria-hidden="true"><use href="#i-qr"/></svg><span>Connect phone</span></button>
           <button id="reader-stop" type="button" class="reader-stop" hidden><svg class="icon"><use href="#i-stop"/></svg><span lang="ko">마이크 끄기</span></button>
           <button id="clear" class="clear-button" type="button" disabled>Clear <span class="sr-only">captions</span></button>
         </footer>
@@ -88,6 +86,7 @@
           <div class="select-wrap">
             <svg class="icon select-icon"><use href="#i-language"/></svg>
             <select id="language">
+              <option value="ko-KR">Korean</option>
               <option value="en-US">English (US)</option>
               <option value="en-GB">English (UK)</option>
               <option value="it-IT">Italian</option>
@@ -96,7 +95,6 @@
               <option value="de-DE">German</option>
               <option value="ja-JP">Japanese</option>
               <option value="zh-CN">Mandarin Chinese</option>
-              <option value="ko-KR">Korean</option>
             </select>
             <svg class="icon select-arrow"><use href="#i-chevron"/></svg>
           </div>
@@ -125,7 +123,7 @@
     </div>
     <figure class="share-qr">
       <img src="share-qr.png" width="238" height="238" alt="QR code for opening Malbit">
-      <figcaption>This code opens Malbit. To share your live captions, use <strong>Connect phone</strong>.</figcaption>
+      <figcaption>Scan to open Malbit on another device.<span lang="ko">스캔하면 다른 기기에서 말빛이 열려요.</span></figcaption>
     </figure>
     <label for="share-link">Public link</label>
     <div class="share-link-row">
@@ -135,44 +133,20 @@
     <p id="share-status" class="share-status" role="status"></p>
   </dialog>
 
-  <dialog id="pair-dialog" aria-labelledby="pair-title">
-    <div class="dialog-head">
-      <h2 id="pair-title">Connect your friend’s phone</h2>
-      <button class="dialog-close icon-button" type="button" aria-label="Close phone setup" autofocus><svg class="icon"><use href="#i-close"/></svg></button>
-    </div>
-    <div id="pair-setup">
-      <p>Create a QR code for your friend. Anyone with this session link can read your new Korean captions for up to two hours.</p>
-      <button id="pair-create" class="primary" type="button">Create live QR</button>
-    </div>
-    <div id="pair-active" hidden>
-      <figure class="share-qr">
-        <img id="pair-qr" width="238" height="238" alt="QR code to watch your live Korean captions">
-        <figcaption>Have your friend scan this code. Keep this tab open on your device.<span lang="ko">이 코드를 스캔하면 실시간 한국어 자막을 볼 수 있어요.</span></figcaption>
-      </figure>
-      <label for="pair-link">Live session link</label>
-      <div class="share-link-row">
-        <input id="pair-link" type="url" readonly>
-        <button id="pair-copy" class="primary" type="button">Copy link</button>
-      </div>
-      <button id="pair-end" class="text-button" type="button">End live session</button>
-    </div>
-    <p id="pair-status" class="share-status" role="status"></p>
-  </dialog>
-
   <dialog id="help-dialog" aria-labelledby="help-title">
     <div class="dialog-head">
       <h2 id="help-title">Use Malbit together</h2>
       <button class="dialog-close icon-button" type="button" aria-label="Close help"><svg class="icon"><use href="#i-close"/></svg></button>
     </div>
     <ol>
-      <li>Open this page in Chrome if possible. Share your screen or use <strong>Connect phone</strong> to show your captions on your friend’s device.</li>
+      <li>Open this page in Chrome if possible. Put the screen where your friend can see it.</li>
       <li>Choose the language you’ll speak, select <strong>Start microphone</strong>, and allow access.</li>
       <li>Speak in short phrases. The Korean text updates as recognition comes in and may change until the phrase is complete.</li>
     </ol>
     <p>Use the expand button for a reader-only view, or <strong>Type a message</strong> if your microphone is unavailable.</p>
     <details id="privacy-details">
       <summary>Speech and translation providers</summary>
-      <p>Your browser may send audio to its speech recognition service. Chrome can translate on your device when its language pack is available. Otherwise, Malbit sends recognized or typed text to <a href="https://mymemory.translated.net/terms-and-conditions" target="_blank" rel="noreferrer">MyMemory</a>, which has a free daily usage limit. A live session also sends recent Korean captions to Malbit so connected devices can read them until the session ends or expires.</p>
+      <p>Your browser may send audio to its speech recognition service. Chrome can translate on your device when its language pack is available. Otherwise, Malbit sends recognized or typed text to <a href="https://mymemory.translated.net/terms-and-conditions" target="_blank" rel="noreferrer">MyMemory</a>, which has a free daily usage limit. Malbit keeps captions only in this open tab.</p>
     </details>
   </dialog>
 
@@ -182,7 +156,7 @@
         <h2 id="type-title">Type a message</h2>
         <button class="dialog-close icon-button" type="button" aria-label="Close typed message"><svg class="icon"><use href="#i-close"/></svg></button>
       </div>
-      <label id="type-label" for="message">Message in English (US)</label>
+      <label id="type-label" for="message">Message in Korean</label>
       <textarea id="message" rows="4" maxlength="360" required autofocus placeholder="Write something to translate…"></textarea>
       <p id="type-status" role="status">The translation appears on the caption screen.</p>
       <button id="send" class="primary" type="submit">Show in Korean</button>

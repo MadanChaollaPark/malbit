@@ -72,7 +72,6 @@ function refresh() {
   $("empty-note").textContent = phase === "live"
     ? "듣고 있어요. 한국어 자막이 여기에 표시돼요."
     : "마이크를 켜고 말하면 한국어로 번역돼요.";
-  window.malbitPair.publish();
 }
 
 function closeToLatest() {
@@ -561,7 +560,16 @@ $("share").addEventListener("click", () => {
   $("share-dialog").showModal();
 });
 $("copy-link").addEventListener("click", async () => {
-  await window.malbitPair.copyLink($("share-link"), $("share-status"));
+  const link = $("share-link");
+  const status = $("share-status");
+  try {
+    await navigator.clipboard.writeText(link.value);
+    status.textContent = "Link copied.";
+  } catch {
+    link.focus();
+    link.select();
+    status.textContent = "Link selected. Copy it to share.";
+  }
 });
 $("help").addEventListener("click", () => $("help-dialog").showModal());
 $("privacy").addEventListener("click", () => {
