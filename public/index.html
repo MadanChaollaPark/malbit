@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f4f7f2">
+  <meta name="description" content="Speak and let a friend read your words as live Korean captions.">
+  <title>말빛 · Live Korean Captions</title>
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+  <script defer src="pair.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body>
+  <svg class="icon-library" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <symbol id="i-mic" viewBox="0 0 24 24"><rect x="8.5" y="3" width="7" height="12" rx="3.5"/><path d="M5 11.5a7 7 0 0 0 14 0M12 18.5V22m-3 0h6"/></symbol>
+    <symbol id="i-stop" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2" fill="currentColor" stroke="none"/></symbol>
+    <symbol id="i-expand" viewBox="0 0 24 24"><path d="M9 4H4v5m11-5h5v5m0 6v5h-5m-6 0H4v-5"/></symbol>
+    <symbol id="i-collapse" viewBox="0 0 24 24"><path d="M4 9h5V4m11 5h-5V4m0 16v-5h5M9 20v-5H4"/></symbol>
+    <symbol id="i-keyboard" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 9h.01M12 9h.01M17 9h.01M7 13h.01M12 13h.01M17 13h.01M9 16h6"/></symbol>
+    <symbol id="i-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.7 9.1a2.4 2.4 0 1 1 3.8 2c-.9.7-1.5 1-1.5 2.3m0 3.3h.01"/></symbol>
+    <symbol id="i-qr" viewBox="0 0 24 24"><path d="M3 3h7v7H3zm11 0h7v7h-7zM3 14h7v7H3zm11 0h3v3h4v4m-7 0h3m4-7h.01"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
+    <symbol id="i-language" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3.3 12h17.4M12 3a13.5 13.5 0 0 1 0 18 13.5 13.5 0 0 1 0-18Z"/></symbol>
+    <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 1 1 8 0v4m-4 4v2"/></symbol>
+    <symbol id="i-captions" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M9.5 10a2.2 2.2 0 1 0 0 4m7-4a2.2 2.2 0 1 0 0 4"/></symbol>
+  </svg>
+
+  <header class="masthead">
+    <div class="frame header-inner">
+      <div class="identity">
+        <img src="icon.svg" alt="" width="39" height="39">
+        <span class="wordmark" lang="ko">말빛</span>
+        <span class="brand-latin">Malbit</span>
+      </div>
+      <div class="header-actions">
+        <button id="share" class="share-button" type="button"><svg class="icon" aria-hidden="true"><use href="#i-qr"/></svg><span>Share</span></button>
+        <button id="help" class="help-button" type="button" aria-label="How to use"><svg class="icon" aria-hidden="true"><use href="#i-help"/></svg><span>How to use</span></button>
+      </div>
+    </div>
+  </header>
+
+  <main class="frame">
+    <div class="intro">
+      <h1>Live Korean captions<span>.</span></h1>
+      <p>Speak in your language. Your friend can read along in Korean.</p>
+    </div>
+
+    <div class="workspace">
+      <section id="reader" class="reader" aria-labelledby="reader-title">
+        <header class="reader-header">
+          <h2 id="reader-title" lang="ko"><svg class="icon"><use href="#i-captions"/></svg> 한국어 자막</h2>
+          <div class="reader-tools">
+            <div class="size-tools" role="group" aria-label="Caption size">
+              <button id="smaller" type="button" aria-label="Decrease caption size" title="Decrease caption size">A−</button>
+              <button id="larger" type="button" aria-label="Increase caption size" title="Increase caption size">A+</button>
+            </div>
+            <button id="expand" class="icon-button" type="button" aria-label="Expand caption view" aria-pressed="false" title="Expand caption view"><svg class="icon"><use href="#i-expand"/></svg></button>
+          </div>
+        </header>
+
+        <div class="caption-scroll" id="caption-scroll" tabindex="0" aria-label="Korean captions">
+          <div id="empty" class="empty" lang="ko">
+            <div class="empty-wave" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+            <p id="empty-title">자막이 여기에 표시됩니다</p>
+            <p id="empty-note">마이크를 켜고 말하면 한국어로 번역돼요.</p>
+          </div>
+          <div id="lines" class="lines"></div>
+          <div id="draft" class="line draft" lang="ko" hidden></div>
+        </div>
+
+        <footer class="reader-footer">
+          <span id="reader-status" class="reader-status" lang="ko" role="status"><i></i><span>대기 중</span></span>
+          <button id="pair" class="pair-button" type="button"><svg class="icon" aria-hidden="true"><use href="#i-qr"/></svg><span>Connect phone</span></button>
+          <button id="reader-stop" type="button" class="reader-stop" hidden><svg class="icon"><use href="#i-stop"/></svg><span lang="ko">마이크 끄기</span></button>
+          <button id="clear" class="clear-button" type="button" disabled>Clear <span class="sr-only">captions</span></button>
+        </footer>
+      </section>
+
+      <aside id="speaker" class="speaker" aria-labelledby="speaker-title">
+        <div class="speaker-heading">
+          <div class="speaker-icon"><svg class="icon"><use href="#i-mic"/></svg></div>
+          <h2 id="speaker-title">Microphone</h2>
+        </div>
+        <div class="language">
+          <label for="language">Spoken language</label>
+          <div class="select-wrap">
+            <svg class="icon select-icon"><use href="#i-language"/></svg>
+            <select id="language">
+              <option value="en-US">English (US)</option>
+              <option value="en-GB">English (UK)</option>
+              <option value="it-IT">Italian</option>
+              <option value="es-ES">Spanish</option>
+              <option value="fr-FR">French</option>
+              <option value="de-DE">German</option>
+              <option value="ja-JP">Japanese</option>
+              <option value="zh-CN">Mandarin Chinese</option>
+              <option value="ko-KR">Korean</option>
+            </select>
+            <svg class="icon select-arrow"><use href="#i-chevron"/></svg>
+          </div>
+        </div>
+        <button id="mic" type="button" class="primary">
+          <svg class="icon"><use href="#i-mic"/></svg><span>Start microphone</span>
+        </button>
+        <p id="mic-note" class="mic-note" role="status">Allow microphone access when prompted.</p>
+        <div class="speaker-secondary">
+          <button id="type" type="button" class="secondary"><svg class="icon"><use href="#i-keyboard"/></svg>Type a message</button>
+          <button id="example" type="button" class="text-button">Show an example</button>
+        </div>
+      </aside>
+    </div>
+
+    <footer class="page-footer">
+      <span><svg class="icon"><use href="#i-lock"/></svg> Captions clear when you reload.</span>
+      <button id="privacy" class="text-button" type="button">How speech and translation are processed</button>
+    </footer>
+  </main>
+
+  <dialog id="share-dialog" aria-labelledby="share-title">
+    <div class="dialog-head">
+      <h2 id="share-title">Share Malbit</h2>
+      <button class="dialog-close icon-button" type="button" aria-label="Close share" autofocus><svg class="icon"><use href="#i-close"/></svg></button>
+    </div>
+    <figure class="share-qr">
+      <img src="share-qr.png" width="238" height="238" alt="QR code for opening Malbit">
+      <figcaption>This code opens Malbit. To share your live captions, use <strong>Connect phone</strong>.</figcaption>
+    </figure>
+    <label for="share-link">Public link</label>
+    <div class="share-link-row">
+      <input id="share-link" type="url" readonly value="https://malbit-live-captions.chaollapark.chatgpt.site/">
+      <button id="copy-link" class="primary" type="button">Copy link</button>
+    </div>
+    <p id="share-status" class="share-status" role="status"></p>
+  </dialog>
+
+  <dialog id="pair-dialog" aria-labelledby="pair-title">
+    <div class="dialog-head">
+      <h2 id="pair-title">Connect your friend’s phone</h2>
+      <button class="dialog-close icon-button" type="button" aria-label="Close phone setup" autofocus><svg class="icon"><use href="#i-close"/></svg></button>
+    </div>
+    <div id="pair-setup">
+      <p>Create a QR code for your friend. Anyone with this session link can read your new Korean captions for up to two hours.</p>
+      <button id="pair-create" class="primary" type="button">Create live QR</button>
+    </div>
+    <div id="pair-active" hidden>
+      <figure class="share-qr">
+        <img id="pair-qr" width="238" height="238" alt="QR code to watch your live Korean captions">
+        <figcaption>Have your friend scan this code. Keep this tab open on your device.<span lang="ko">이 코드를 스캔하면 실시간 한국어 자막을 볼 수 있어요.</span></figcaption>
+      </figure>
+      <label for="pair-link">Live session link</label>
+      <div class="share-link-row">
+        <input id="pair-link" type="url" readonly>
+        <button id="pair-copy" class="primary" type="button">Copy link</button>
+      </div>
+      <button id="pair-end" class="text-button" type="button">End live session</button>
+    </div>
+    <p id="pair-status" class="share-status" role="status"></p>
+  </dialog>
+
+  <dialog id="help-dialog" aria-labelledby="help-title">
+    <div class="dialog-head">
+      <h2 id="help-title">Use Malbit together</h2>
+      <button class="dialog-close icon-button" type="button" aria-label="Close help"><svg class="icon"><use href="#i-close"/></svg></button>
+    </div>
+    <ol>
+      <li>Open this page in Chrome if possible. Share your screen or use <strong>Connect phone</strong> to show your captions on your friend’s device.</li>
+      <li>Choose the language you’ll speak, select <strong>Start microphone</strong>, and allow access.</li>
+      <li>Speak in short phrases. The Korean text updates as recognition comes in and may change until the phrase is complete.</li>
+    </ol>
+    <p>Use the expand button for a reader-only view, or <strong>Type a message</strong> if your microphone is unavailable.</p>
+    <details id="privacy-details">
+      <summary>Speech and translation providers</summary>
+      <p>Your browser may send audio to its speech recognition service. Chrome can translate on your device when its language pack is available. Otherwise, Malbit sends recognized or typed text to <a href="https://mymemory.translated.net/terms-and-conditions" target="_blank" rel="noreferrer">MyMemory</a>, which has a free daily usage limit. A live session also sends recent Korean captions to Malbit so connected devices can read them until the session ends or expires.</p>
+    </details>
+  </dialog>
+
+  <dialog id="type-dialog" aria-labelledby="type-title">
+    <form id="type-form">
+      <div class="dialog-head">
+        <h2 id="type-title">Type a message</h2>
+        <button class="dialog-close icon-button" type="button" aria-label="Close typed message"><svg class="icon"><use href="#i-close"/></svg></button>
+      </div>
+      <label id="type-label" for="message">Message in English (US)</label>
+      <textarea id="message" rows="4" maxlength="360" required autofocus placeholder="Write something to translate…"></textarea>
+      <p id="type-status" role="status">The translation appears on the caption screen.</p>
+      <button id="send" class="primary" type="submit">Show in Korean</button>
+    </form>
+  </dialog>
+  <div class="sr-only" id="announcement" aria-live="polite" aria-atomic="true" lang="ko"></div>
+</body>
+</html>
