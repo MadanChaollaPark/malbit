@@ -20,6 +20,8 @@ let micError = "";
 let typeRequest = null;
 let captionSize = 1;
 let expanded = false;
+let screenWakeIntent = null;
+let screenWakeLock = null;
 
 const translators = new Map();
 const cachedTranslations = new Map();
@@ -40,6 +42,36 @@ function selectedName() {
 
 function icon(button, name) {
   button.querySelector("use").setAttribute("href", "#i-" + name);
+}
+
+async function setScreenAwake(enabled) {
+  if (Boolean(screenWakeIntent) === enabled) return;
+  const intent = enabled ? {} : null;
+  screenWakeIntent = intent;
+
+  try {
+    if (!intent) {
+      const lock = screenWakeLock;
+      screenWakeLock = null;
+      if (lock && !lock.released) await lock.release();
+      return;
+    }
+    if (!navigator.wakeLock) return;
+
+    const lock = await navigator.wakeLock.request("screen");
+    if (screenWakeIntent === intent) {
+      screenWakeLock = lock;
+    } else if (!lock.released) {
+      // A request can resolve after the user leaves the reader or stops listening.
+      await lock.release();
+    }
+  } catch {
+    // Browser settings can deny the wake lock while captions remain available.
+  }
+}
+
+function updateScreenAwake() {
+  setScreenAwake((Boolean(session) || expanded) && document.visibilityState === "visible");
 }
 
 function refresh() {
@@ -75,6 +107,7 @@ function refresh() {
   $("empty-note").textContent = phase === "live"
     ? "듣고 있어요. 한국어 자막이 여기에 표시돼요."
     : "마이크를 켜고 말하면 한국어로 번역돼요.";
+  updateScreenAwake();
 }
 
 function closeToLatest() {
@@ -639,10 +672,14 @@ $("reader-stop").addEventListener("click", () => {
 });
 window.addEventListener("pagehide", () => {
   const current = session;
-  if (!current) return;
-  finishSession(current);
-  current.recognition?.abort();
+  if (current) {
+    finishSession(current);
+    current.recognition?.abort();
+  }
+  setScreenAwake(false);
 });
+window.addEventListener("pageshow", updateScreenAwake);
+document.addEventListener("visibilitychange", updateScreenAwake);
 document.addEventListener("malbit:languagechange", refresh);
 
 updateSize();
