@@ -15,3 +15,4 @@ python3 -m http.server 8764 --bind 127.0.0.1 --directory dist
 ```
 
 The speaker’s browser provides speech recognition. For speech in another language, Malbit uses Chrome’s on-device translator when ready and falls back to MyMemory.
+(built it for a friend who is deaf he couldn't hear what I was saying so I asked openclaw to make a subtitlbe machine)
