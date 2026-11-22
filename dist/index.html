@@ -4,10 +4,11 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#f4f7f2">
-  <meta name="description" content="Speak and let a friend read your words as live Korean captions.">
+  <meta name="description" content="Speak and let a friend read your words as live Korean captions." data-i18n-content="tagline">
   <title>말빛 · Live Korean Captions</title>
   <link rel="icon" href="icon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="style.css">
+  <script defer src="languages.js"></script>
   <script defer src="app.js"></script>
 </head>
 <body>
@@ -34,16 +35,30 @@
         <span class="brand-latin">Malbit</span>
       </div>
       <div class="header-actions">
-        <button id="share" class="share-button" type="button"><svg class="icon" aria-hidden="true"><use href="#i-qr"/></svg><span>Share</span></button>
-        <button id="help" class="help-button" type="button" aria-label="How to use"><svg class="icon" aria-hidden="true"><use href="#i-help"/></svg><span>How to use</span></button>
+        <div class="select-wrap site-language">
+          <svg class="icon select-icon" aria-hidden="true"><use href="#i-language"/></svg>
+          <select id="site-language" aria-label="Site language" data-i18n-aria-label="siteLanguage">
+            <option value="ko" lang="ko">한국어</option>
+            <option value="en" lang="en" selected>English</option>
+            <option value="it" lang="it">Italiano</option>
+            <option value="es" lang="es">Español</option>
+            <option value="fr" lang="fr">Français</option>
+            <option value="de" lang="de">Deutsch</option>
+            <option value="ja" lang="ja">日本語</option>
+            <option value="zh-CN" lang="zh-CN">简体中文</option>
+          </select>
+          <svg class="icon select-arrow" aria-hidden="true"><use href="#i-chevron"/></svg>
+        </div>
+        <button id="share" class="share-button" type="button" aria-label="Share" data-i18n-aria-label="share"><svg class="icon" aria-hidden="true"><use href="#i-qr"/></svg><span data-i18n="share">Share</span></button>
+        <button id="help" class="help-button" type="button" aria-label="How to use" data-i18n-aria-label="help"><svg class="icon" aria-hidden="true"><use href="#i-help"/></svg><span data-i18n="help">How to use</span></button>
       </div>
     </div>
   </header>
 
   <main class="frame">
     <div class="intro">
-      <h1>Live Korean captions<span>.</span></h1>
-      <p>Speak in your language. Your friend can read along in Korean.</p>
+      <h1><span class="intro-title" data-i18n="hero">Live Korean captions</span><span>.</span></h1>
+      <p data-i18n="tagline">Speak in your language. Your friend can read along in Korean.</p>
     </div>
 
     <div class="workspace">
@@ -51,15 +66,15 @@
         <header class="reader-header">
           <h2 id="reader-title" lang="ko"><svg class="icon"><use href="#i-captions"/></svg> 한국어 자막</h2>
           <div class="reader-tools">
-            <div class="size-tools" role="group" aria-label="Caption size">
-              <button id="smaller" type="button" aria-label="Decrease caption size" title="Decrease caption size">A−</button>
-              <button id="larger" type="button" aria-label="Increase caption size" title="Increase caption size">A+</button>
+            <div class="size-tools" role="group" aria-label="Caption size" data-i18n-aria-label="captionSize">
+              <button id="smaller" type="button" aria-label="Decrease caption size" title="Decrease caption size" data-i18n-aria-label="smaller" data-i18n-title="smaller">A−</button>
+              <button id="larger" type="button" aria-label="Increase caption size" title="Increase caption size" data-i18n-aria-label="larger" data-i18n-title="larger">A+</button>
             </div>
             <button id="expand" class="icon-button" type="button" aria-label="Expand caption view" aria-pressed="false" title="Expand caption view"><svg class="icon"><use href="#i-expand"/></svg></button>
           </div>
         </header>
 
-        <div class="caption-scroll" id="caption-scroll" tabindex="0" aria-label="Korean captions">
+        <div class="caption-scroll" id="caption-scroll" tabindex="0" aria-label="Korean captions" data-i18n-aria-label="captions">
           <div id="empty" class="empty" lang="ko">
             <div class="empty-wave" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
             <p id="empty-title">자막이 여기에 표시됩니다</p>
@@ -72,21 +87,21 @@
         <footer class="reader-footer">
           <span id="reader-status" class="reader-status" lang="ko" role="status"><i></i><span>대기 중</span></span>
           <button id="reader-stop" type="button" class="reader-stop" hidden><svg class="icon"><use href="#i-stop"/></svg><span lang="ko">마이크 끄기</span></button>
-          <button id="clear" class="clear-button" type="button" disabled>Clear <span class="sr-only">captions</span></button>
+          <button id="clear" class="clear-button" type="button" aria-label="Clear captions" data-i18n="clear" data-i18n-aria-label="clearCaptions" disabled>Clear</button>
         </footer>
       </section>
 
       <aside id="speaker" class="speaker" aria-labelledby="speaker-title">
         <div class="speaker-heading">
           <div class="speaker-icon"><svg class="icon"><use href="#i-mic"/></svg></div>
-          <h2 id="speaker-title">Microphone</h2>
+          <h2 id="speaker-title" data-i18n="microphone">Microphone</h2>
         </div>
         <div class="language">
-          <label for="language">Spoken language</label>
+          <label for="language" data-i18n="spokenLanguage">Spoken language</label>
           <div class="select-wrap">
             <svg class="icon select-icon"><use href="#i-language"/></svg>
-            <select id="language">
-              <option value="ko-KR">Korean</option>
+            <select id="language" autocomplete="off">
+              <option value="ko-KR" selected>Korean</option>
               <option value="en-US">English (US)</option>
               <option value="en-GB">English (UK)</option>
               <option value="it-IT">Italian</option>
@@ -104,62 +119,62 @@
         </button>
         <p id="mic-note" class="mic-note" role="status">Allow microphone access when prompted.</p>
         <div class="speaker-secondary">
-          <button id="type" type="button" class="secondary"><svg class="icon"><use href="#i-keyboard"/></svg>Type a message</button>
-          <button id="example" type="button" class="text-button">Show an example</button>
+          <button id="type" type="button" class="secondary"><svg class="icon"><use href="#i-keyboard"/></svg><span data-i18n="type">Type a message</span></button>
+          <button id="example" type="button" class="text-button" data-i18n="example">Show an example</button>
         </div>
       </aside>
     </div>
 
     <footer class="page-footer">
-      <span><svg class="icon"><use href="#i-lock"/></svg> Captions clear when you reload.</span>
-      <button id="privacy" class="text-button" type="button">How speech and translation are processed</button>
+      <span><svg class="icon"><use href="#i-lock"/></svg><span data-i18n="cleared">Captions clear when you reload.</span></span>
+      <button id="privacy" class="text-button" type="button" data-i18n="processing">How speech and translation are processed</button>
     </footer>
   </main>
 
   <dialog id="share-dialog" aria-labelledby="share-title">
     <div class="dialog-head">
-      <h2 id="share-title">Share Malbit</h2>
-      <button class="dialog-close icon-button" type="button" aria-label="Close share" autofocus><svg class="icon"><use href="#i-close"/></svg></button>
+      <h2 id="share-title" data-i18n="shareTitle">Share Malbit</h2>
+      <button class="dialog-close icon-button" type="button" aria-label="Close share" data-i18n-aria-label="shareClose" autofocus><svg class="icon"><use href="#i-close"/></svg></button>
     </div>
     <figure class="share-qr">
-      <img src="share-qr.png" width="238" height="238" alt="QR code for opening Malbit">
-      <figcaption>Scan to open Malbit on another device.<span lang="ko">스캔하면 다른 기기에서 말빛이 열려요.</span></figcaption>
+      <img src="share-qr.png" width="238" height="238" alt="QR code for opening Malbit" data-i18n-alt="qrAlt">
+      <figcaption><span data-i18n="scan">Scan to open Malbit on another device.</span><span class="korean-hint" lang="ko">스캔하면 다른 기기에서 말빛이 열려요.</span></figcaption>
     </figure>
-    <label for="share-link">Public link</label>
+    <label for="share-link" data-i18n="publicLink">Public link</label>
     <div class="share-link-row">
       <input id="share-link" type="url" readonly value="https://malbit-live-captions.chaollapark.chatgpt.site/">
-      <button id="copy-link" class="primary" type="button">Copy link</button>
+      <button id="copy-link" class="primary" type="button" data-i18n="copy">Copy link</button>
     </div>
     <p id="share-status" class="share-status" role="status"></p>
   </dialog>
 
   <dialog id="help-dialog" aria-labelledby="help-title">
     <div class="dialog-head">
-      <h2 id="help-title">Use Malbit together</h2>
-      <button class="dialog-close icon-button" type="button" aria-label="Close help"><svg class="icon"><use href="#i-close"/></svg></button>
+      <h2 id="help-title" data-i18n="helpTitle">Use Malbit together</h2>
+      <button class="dialog-close icon-button" type="button" aria-label="Close help" data-i18n-aria-label="close"><svg class="icon"><use href="#i-close"/></svg></button>
     </div>
     <ol>
-      <li>Open this page in Chrome if possible. Put the screen where your friend can see it.</li>
-      <li>Choose the language you’ll speak, select <strong>Start microphone</strong>, and allow access.</li>
-      <li>Speak in short phrases. The Korean text updates as recognition comes in and may change until the phrase is complete.</li>
+      <li data-i18n="helpScreen">Open this page in Chrome if possible. Put the screen where your friend can see it.</li>
+      <li data-i18n="helpStart">Choose the language you’ll speak, select Start microphone, and allow access.</li>
+      <li data-i18n="helpSpeak">Speak in short phrases. Captions may change until the phrase is complete.</li>
     </ol>
-    <p>Use the expand button for a reader-only view, or <strong>Type a message</strong> if your microphone is unavailable.</p>
+    <p data-i18n="helpRead">Expand the caption view for larger text. You can also type a message.</p>
     <details id="privacy-details">
-      <summary>Speech and translation providers</summary>
-      <p>Your browser may send audio to its speech recognition service. Chrome can translate on your device when its language pack is available. Otherwise, Malbit sends recognized or typed text to <a href="https://mymemory.translated.net/terms-and-conditions" target="_blank" rel="noreferrer">MyMemory</a>, which has a free daily usage limit. Malbit keeps captions only in this open tab.</p>
+      <summary data-i18n="providers">Speech and translation providers</summary>
+      <p><span data-i18n="providerAudio">Your browser may send audio to its speech recognition service.</span> <span data-i18n="providerTranslation">Chrome uses on-device translation when the language pack is ready. Otherwise, Malbit sends text to MyMemory for translation. MyMemory has a free daily limit.</span> <span data-i18n="providerStorage">Malbit stores captions in this open tab.</span> <a href="https://mymemory.translated.net/terms-and-conditions" target="_blank" rel="noreferrer" data-i18n="providerTerms">MyMemory terms</a></p>
     </details>
   </dialog>
 
   <dialog id="type-dialog" aria-labelledby="type-title">
     <form id="type-form">
       <div class="dialog-head">
-        <h2 id="type-title">Type a message</h2>
-        <button class="dialog-close icon-button" type="button" aria-label="Close typed message"><svg class="icon"><use href="#i-close"/></svg></button>
+        <h2 id="type-title" data-i18n="type">Type a message</h2>
+        <button class="dialog-close icon-button" type="button" aria-label="Close typed message" data-i18n-aria-label="close"><svg class="icon"><use href="#i-close"/></svg></button>
       </div>
       <label id="type-label" for="message">Message in Korean</label>
-      <textarea id="message" rows="4" maxlength="360" required autofocus placeholder="Write something to translate…"></textarea>
+      <textarea id="message" rows="4" maxlength="360" required autofocus placeholder="Write something to translate…" data-i18n-placeholder="placeholder"></textarea>
       <p id="type-status" role="status">The translation appears on the caption screen.</p>
-      <button id="send" class="primary" type="submit">Show in Korean</button>
+      <button id="send" class="primary" type="submit" data-i18n="showKorean">Show in Korean</button>
     </form>
   </dialog>
   <div class="sr-only" id="announcement" aria-live="polite" aria-atomic="true" lang="ko"></div>

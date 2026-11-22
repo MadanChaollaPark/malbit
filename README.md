@@ -1,6 +1,6 @@
 # Malbit (말빛)
 
-Malbit turns speech into live Korean captions on a shared screen. Korean is the default spoken language. You can choose another language before starting the microphone.
+Malbit turns speech into live Korean captions on a shared screen. Korean is the default spoken language. You can choose another language before starting the microphone. Use **Site language** in the header to change the interface. That choice is saved in your browser.
 
 [Open the live site](https://malbit-live-captions.chaollapark.chatgpt.site/)
 

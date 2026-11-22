@@ -1,6 +1,7 @@
 "use strict";
 
 const $ = (id) => document.getElementById(id);
+const { t } = window.malbitI18n;
 const speechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 const captionScroll = $("caption-scroll");
 const lines = $("lines");
@@ -24,12 +25,12 @@ const cachedTranslations = new Map();
 let onlineLimitReached = false;
 
 const stateLabels = {
-  idle: ["Start microphone", "대기 중"],
-  starting: ["Cancel microphone", "마이크 연결 중"],
-  live: ["Stop microphone", "듣는 중"],
-  reconnecting: ["Stop microphone", "마이크 다시 연결 중"],
-  stopping: ["Stopping…", "마이크 끄는 중"],
-  error: ["Start microphone", "마이크 연결을 확인해 주세요"]
+  idle: ["start", "대기 중"],
+  starting: ["cancel", "마이크 연결 중"],
+  live: ["stop", "듣는 중"],
+  reconnecting: ["stop", "마이크 다시 연결 중"],
+  stopping: ["stopping", "마이크 끄는 중"],
+  error: ["start", "마이크 연결을 확인해 주세요"]
 };
 
 function selectedName() {
@@ -45,7 +46,7 @@ function refresh() {
   const phase = session?.phase || (micError ? "error" : "idle");
   const [micLabel, koreanLabel] = stateLabels[phase];
   const canListen = Boolean(speechRecognition && window.isSecureContext);
-  mic.querySelector("span").textContent = micLabel;
+  mic.querySelector("span").textContent = t(micLabel);
   mic.dataset.active = String(active);
   mic.disabled = !canListen || phase === "stopping";
   icon(mic, active ? "stop" : "mic");
@@ -57,15 +58,16 @@ function refresh() {
   readerStatus.dataset.state = phase;
   if (readerStatus.lastElementChild.textContent !== koreanLabel) readerStatus.lastElementChild.textContent = koreanLabel;
   micNote.dataset.error = String(Boolean(micError) || !canListen);
-  const note = micError || ({
-    starting: "Allow microphone access if your browser asks.",
-    live: "Listening. Speak in short phrases.",
-    reconnecting: "Reconnecting the microphone…",
-    stopping: "Finishing the last phrase…"
-  })[phase] || (canListen
-    ? "Allow microphone access when prompted."
-    : "Live speech is unavailable here. Open in Chrome or type a message.");
+  const note = t(micError || ({
+    starting: "micStarting",
+    live: "micLive",
+    reconnecting: "micReconnecting",
+    stopping: "micStopping"
+  })[phase] || (canListen ? "micIdle" : "micUnavailable"));
   if (micNote.textContent !== note) micNote.textContent = note;
+  const expandLabel = t(expanded ? "collapse" : "expand");
+  $("expand").setAttribute("aria-label", expandLabel);
+  $("expand").title = expandLabel;
 
   $("empty").hidden = Boolean(lines.childElementCount) || !draft.hidden;
   $("empty-title").textContent = phase === "live" ? "말씀해 주세요" : "자막이 여기에 표시됩니다";
@@ -318,12 +320,12 @@ function finishSession(context, error = "") {
 
 function captureFailure(reason) {
   return ({
-    "not-allowed": "Microphone permission is blocked. Allow it in your browser’s site settings, or type a message.",
-    "service-not-allowed": "Browser speech recognition is unavailable. Try Chrome or type a message.",
-    "audio-capture": "No microphone was found. Connect one or type a message.",
-    "network": "The browser’s speech service is unreachable. Check your connection and try again, or type a message.",
-    "language-not-supported": "The browser can’t recognize this language. Try another language or type a message."
-  })[reason] || "The microphone stopped unexpectedly. Start it again or type a message.";
+    "not-allowed": "errPermission",
+    "service-not-allowed": "errService",
+    "audio-capture": "errDevice",
+    "network": "errNetwork",
+    "language-not-supported": "errLanguage"
+  })[reason] || "errStopped";
 }
 
 function startCapture(context) {
@@ -403,7 +405,7 @@ function startCapture(context) {
     }
     context.emptyCycles = heard ? 0 : context.emptyCycles + 1;
     if (context.emptyCycles >= 4) {
-      finishSession(context, silence ? "No speech detected. Start again and speak closer to the microphone." : captureFailure("aborted"));
+      finishSession(context, silence ? "errSilence" : captureFailure("aborted"));
       return;
     }
     context.phase = "reconnecting";
@@ -495,10 +497,7 @@ function setExpanded(value) {
     document.querySelector(selector).inert = expanded;
   }
   const button = $("expand");
-  const label = expanded ? "Exit expanded caption view" : "Expand caption view";
   button.setAttribute("aria-pressed", String(expanded));
-  button.setAttribute("aria-label", label);
-  button.title = label;
   icon(button, expanded ? "collapse" : "expand");
   refresh();
   if (follow) captionScroll.scrollTop = captionScroll.scrollHeight;
@@ -509,8 +508,8 @@ const typeStatus = $("type-status");
 const message = $("message");
 
 function openType() {
-  $("type-label").textContent = "Message in " + selectedName();
-  typeStatus.textContent = "The translation appears on the caption screen.";
+  $("type-label").textContent = t("messageIn").replace("{language}", selectedName());
+  typeStatus.textContent = t("typeIdle");
   typeStatus.dataset.error = "false";
   typedDialog.showModal();
   message.focus();
@@ -523,7 +522,7 @@ $("type-form").addEventListener("submit", async (event) => {
   const request = {};
   typeRequest = request;
   $("send").disabled = true;
-  typeStatus.textContent = "Translating…";
+  typeStatus.textContent = t("translating");
   typeStatus.dataset.error = "false";
   try {
     warmTranslator(language.value);
@@ -536,9 +535,7 @@ $("type-form").addEventListener("submit", async (event) => {
   } catch (error) {
     if (typeRequest !== request) return;
     typeStatus.dataset.error = "true";
-    typeStatus.textContent = error.message === "quota"
-      ? "The online translator has reached its free daily limit. Try again tomorrow or use Chrome’s on-device translation."
-      : "Translation failed. Check your connection and try again.";
+    typeStatus.textContent = t(error.message === "quota" ? "quota" : "translateFailed");
   } finally {
     if (typeRequest === request) {
       typeRequest = null;
@@ -564,11 +561,11 @@ $("copy-link").addEventListener("click", async () => {
   const status = $("share-status");
   try {
     await navigator.clipboard.writeText(link.value);
-    status.textContent = "Link copied.";
+    status.textContent = t("copied");
   } catch {
     link.focus();
     link.select();
-    status.textContent = "Link selected. Copy it to share.";
+    status.textContent = t("copyFallback");
   }
 });
 $("help").addEventListener("click", () => $("help-dialog").showModal());
@@ -616,6 +613,7 @@ window.addEventListener("pagehide", () => {
   finishSession(current);
   current.recognition?.abort();
 });
+document.addEventListener("malbit:languagechange", refresh);
 
 updateSize();
 refresh();
