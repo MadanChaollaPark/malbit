@@ -3,6 +3,7 @@
 const $ = (id) => document.getElementById(id);
 const { t } = window.malbitI18n;
 const speechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+const isAndroid = navigator.userAgentData?.platform === "Android" || /\bAndroid\b/i.test(navigator.userAgent);
 const captionScroll = $("caption-scroll");
 const lines = $("lines");
 const draft = $("draft");
@@ -335,12 +336,20 @@ function startCapture(context) {
   const seenFinal = new Set();
   let heard = false;
   let silence = false;
+  let retryInPhraseMode = false;
   const isCurrent = () => session === context && context.recognition === recognition;
 
   recognition.lang = context.locale;
-  recognition.continuous = true;
+  recognition.continuous = !context.singlePhrase;
   recognition.interimResults = true;
   recognition.maxAlternatives = 1;
+
+  const failCapture = (message) => {
+    const partial = context.partial;
+    finishSession(context, message);
+    if (partial) finalize(partial, context.locale);
+    recognition.abort();
+  };
 
   recognition.onstart = () => {
     if (!isCurrent() || context.phase === "stopping") return;
@@ -387,13 +396,23 @@ function startCapture(context) {
       return;
     }
     if (context.phase === "stopping" && event.error === "aborted") return;
-    const partial = context.partial;
-    finishSession(context, captureFailure(event.error));
-    if (partial) finalize(partial, context.locale);
-    recognition.abort();
+    if (retryInPhraseMode) return;
+    if (isAndroid && !context.singlePhrase && context.phase !== "stopping" && !document.hidden &&
+        (event.error === "aborted" || event.error === "audio-capture")) {
+      retryInPhraseMode = true;
+      context.phase = "reconnecting";
+      refresh();
+      // Wait for the browser to release the Android recognizer before starting again.
+      context.restartTimer = setTimeout(() => {
+        if (isCurrent()) failCapture("errAndroidSpeech");
+      }, 1800);
+      return;
+    }
+    failCapture(isAndroid && event.error === "aborted" ? "errAndroidSpeech" : captureFailure(event.error));
   };
   recognition.onend = () => {
     if (!isCurrent()) return;
+    clearTimeout(context.restartTimer);
     const partial = context.partial;
     resetDraft(context);
     context.recognition = null;
@@ -404,13 +423,24 @@ function startCapture(context) {
       return;
     }
     context.emptyCycles = heard ? 0 : context.emptyCycles + 1;
+    if (isAndroid && !context.singlePhrase &&
+        (retryInPhraseMode || (!silence && context.emptyCycles >= 2))) {
+      context.singlePhrase = true;
+      context.emptyCycles = 0;
+    }
     if (context.emptyCycles >= 4) {
-      finishSession(context, silence ? "errSilence" : captureFailure("aborted"));
+      finishSession(context, silence ? "errSilence" : isAndroid ? "errAndroidSpeech" : captureFailure("aborted"));
       return;
     }
     context.phase = "reconnecting";
     refresh();
-    context.restartTimer = setTimeout(() => startCapture(context), 450);
+    context.restartTimer = setTimeout(() => {
+      if (isAndroid && document.hidden) {
+        finishSession(context, "errAndroidSpeech");
+        return;
+      }
+      startCapture(context);
+    }, isAndroid ? 800 : 450);
   };
 
   try {
@@ -425,7 +455,7 @@ async function startMic() {
   const locale = language.value;
   const context = {
     locale, phase: "starting", partial: "", lastPreview: "",
-    previewAt: 0, version: 0, emptyCycles: 0
+    previewAt: 0, version: 0, emptyCycles: 0, singlePhrase: false
   };
   removeExample();
   micError = "";
@@ -433,8 +463,8 @@ async function startMic() {
   warmTranslator(locale);
   refresh();
 
-  // Modern Chrome accepts a captured audio track. Other implementations open their own microphone.
-  if (typeof speechRecognition.available !== "function" || !navigator.mediaDevices?.getUserMedia) {
+  // Let Android's speech service own the microphone. Modern desktop Chrome accepts an audio track.
+  if (isAndroid || typeof speechRecognition.available !== "function" || !navigator.mediaDevices?.getUserMedia) {
     startCapture(context);
     return;
   }
