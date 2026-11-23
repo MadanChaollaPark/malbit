@@ -86,8 +86,10 @@
 
         <footer class="reader-footer">
           <span id="reader-status" class="reader-status" lang="ko" role="status"><i></i><span>대기 중</span></span>
-          <button id="reader-stop" type="button" class="reader-stop" hidden><svg class="icon"><use href="#i-stop"/></svg><span lang="ko">마이크 끄기</span></button>
-          <button id="clear" class="clear-button" type="button" aria-label="Clear captions" data-i18n="clear" data-i18n-aria-label="clearCaptions" disabled>Clear</button>
+          <div class="reader-actions">
+            <button id="reader-mic" type="button" class="reader-mic" hidden><svg class="icon" aria-hidden="true"><use href="#i-mic"/></svg><span>Start microphone</span></button>
+            <button id="clear" class="clear-button" type="button" aria-label="Clear captions" data-i18n="clear" data-i18n-aria-label="clearCaptions" disabled>Clear</button>
+          </div>
         </footer>
       </section>
 

@@ -9,7 +9,8 @@ const lines = $("lines");
 const draft = $("draft");
 const language = $("language");
 const reader = $("reader");
-const mic = $("mic");
+const readerMic = $("reader-mic");
+const microphoneButtons = [$("mic"), readerMic];
 const readerStatus = $("reader-status");
 const micNote = $("mic-note");
 
@@ -79,15 +80,17 @@ function refresh() {
   const phase = session?.phase || (micError ? "error" : "idle");
   const [micLabel, koreanLabel] = stateLabels[phase];
   const canListen = Boolean(speechRecognition && window.isSecureContext);
-  mic.querySelector("span").textContent = t(micLabel);
-  mic.dataset.active = String(active);
-  mic.disabled = !canListen || phase === "stopping";
-  icon(mic, active ? "stop" : "mic");
+  const label = t(micLabel);
+  for (const button of microphoneButtons) {
+    button.querySelector("span").textContent = label;
+    button.dataset.active = String(active);
+    button.disabled = !canListen || phase === "stopping";
+    icon(button, active ? "stop" : "mic");
+  }
   language.disabled = active;
   $("clear").disabled = active || !lines.childElementCount;
   $("example").disabled = active || Boolean(example) || Boolean(latest);
-  $("reader-stop").hidden = !active || !expanded;
-  $("reader-stop").disabled = phase === "stopping";
+  readerMic.hidden = !expanded;
   readerStatus.dataset.state = phase;
   if (readerStatus.lastElementChild.textContent !== koreanLabel) readerStatus.lastElementChild.textContent = koreanLabel;
   micNote.dataset.error = String(Boolean(micError) || !canListen);
@@ -665,11 +668,9 @@ document.addEventListener("keydown", (event) => {
     $("expand").focus();
   }
 });
-mic.addEventListener("click", () => session ? stopMic() : startMic());
-$("reader-stop").addEventListener("click", () => {
-  stopMic();
-  $("expand").focus();
-});
+for (const button of microphoneButtons) {
+  button.addEventListener("click", () => session ? stopMic() : startMic());
+}
 window.addEventListener("pagehide", () => {
   const current = session;
   if (current) {
